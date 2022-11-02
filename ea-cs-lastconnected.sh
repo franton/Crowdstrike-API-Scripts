@@ -9,8 +9,8 @@ if [ "$falconctl" ];
 then
 	test=$( "$falconctl" stats | /usr/bin/awk '/Cloud Activity | Last Established At/ {print $4,$5,$6,$8}' )
     if [ ! -z "$test" ];
-    fi
-		echo "<result>$( /bin/date -j -f "%b %d, %Y %H:%M:%S" "$test" "+%Y-%m-%d %H:%M:%S" )</result>"
+    then
+	echo "<result>$( /bin/date -j -f "%b %d, %Y %H:%M:%S" "$test" "+%Y-%m-%d %H:%M:%S" )</result>"
     else
     	echo "<result>1970-01-01 09:00:00</result>"
     fi
