@@ -11,6 +11,7 @@ then
 	# Client ID, Client Secret for the API token. Then make a base64 version.
 	clientid=""
 	secret=""
+	customerid=""
 	b64creds=$( printf "$clientid:$secret" | /usr/bin/iconv -t ISO-8859-1 | /usr/bin/base64 -i - )
 
 	# Set a default URL
@@ -61,6 +62,7 @@ then
 
 	# Finally install and clean up
 	/usr/sbin/installer -target / -pkg /private/tmp/${sensorname}
+	/Applications/Falcon.app/Contents/Resources/falconctl license $customerid
 	/bin/rm /private/tmp/${sensorname}
 else
 	echo "Crowdstrike already present."
