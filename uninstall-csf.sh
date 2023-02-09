@@ -27,8 +27,8 @@ then
 
     # Work out Client ID from current install
     # Remove all - characters otherwise CS API shows erroneous results.
-    csfalconstats=$( /Applications/Falcon.app/Contents/Resources/falconctl stats )
-    csfalconid=$( echo $csfalconstats | /usr/bin/grep "agentID:" | /usr/bin/awk '{ print $2 }' | /usr/bin/tr -d "-" )
+    csfalconstats=$( /Applications/Falcon.app/Contents/Resources/falconctl stats | /usr/bin/grep "agentID:" )
+    csfalconid=$( echo $csfalconstats | /usr/bin/awk '{ print $2 }' | /usr/bin/tr -d "-" )
 
     # Request bearer access token using the API
     token=$( /usr/bin/curl -s -X POST "$oauthtoken" -H "accept: application/json" -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=${clientid}&client_secret=${secret}" )
