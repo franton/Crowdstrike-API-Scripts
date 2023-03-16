@@ -31,7 +31,7 @@ then
 	version="1"
 
 	# Now define the API query we need
-	sensorlist="$baseurl/sensors/combined/installers/v1?offset=${version}&limit=1&filter=platform%3A%22mac%22"
+	sensorlist="$baseurl/sensors/combined/installers/v1?sort=version%7Cdesc&offset=${version}&limit=1&filter=platform%3A%22mac%22"
 	sensordl="$baseurl/sensors/entities/download-installer/v1"
 
 	# Request bearer access token using the API
