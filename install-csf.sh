@@ -16,6 +16,9 @@ then
 	# Set a default URL
 	baseurl="https://api.crowdstrike.com"
 
+	# Work out major os version
+	majver=$( /usr/bin/sw_vers -productVersion | /usr/bin/cut -d "." -f1 )
+
 	# Now use this to work out the API base url
 	# Highly modified from @Dj Padzensky 's work which I was linked to PR
 	# on mac admin's slack
@@ -38,12 +41,23 @@ then
 	token=$( /usr/bin/curl -s -X POST "$oauthtoken" -H "accept: application/json" -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=${clientid}&client_secret=${secret}" )
 
 	# Extract the bearer token from the json output above
-	bearer=$( /usr/bin/plutil -extract access_token raw -o - - <<< "$token" )
+	if [ "$majver" -le 11 ];
+	then
+		bearer=$( /usr/bin/osascript -l 'JavaScript' -e "JSON.parse(\`$token\`).access_token" )
+	else
+		bearer=$( /usr/bin/plutil -extract access_token raw -o - - <<< "$token" )
+	fi
 
 	# Work out the CrowdStrike installer, grab the SHA256 hash and use that to download that installer
 	sensorv=$( /usr/bin/curl -s -X GET "$sensorlist" -H "accept: application/json" -H "authorization: Bearer ${bearer}" )
-	sensorname=$( /usr/bin/plutil -extract resources.0.name raw -o - - <<< "$sensorv" )
-	sensorsha=$( /usr/bin/plutil -extract resources.0.sha256 raw -o - - <<< "$sensorv" )
+	if [ "$majver" -le 11 ];
+	then
+		sensorname=$( /usr/bin/osascript -l 'JavaScript' -e "JSON.parse(\`$sensorv\`).resources[0].name" )
+		sensorsha=$( /usr/bin/osascript -l 'JavaScript' -e "JSON.parse(\`$sensorv\`).resources[0].sha256" )
+	else
+		sensorname=$( /usr/bin/plutil -extract resources.0.name raw -o - - <<< "$sensorv" )
+		sensorsha=$( /usr/bin/plutil -extract resources.0.sha256 raw -o - - <<< "$sensorv" )
+	fi
 
 	# Download the client. Retry if required up to 10 times.
 	for loop in {1..10};
