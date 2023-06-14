@@ -7,7 +7,7 @@ falconctl=$( /usr/bin/find /Applications -iname "falconctl" -type f -maxdepth 4 
 
 if [ "$falconctl" ];
 then
-  echo "<result>$( "$falconctl" stats | /usr/bin/awk '/agentID/ {print $2}' | /usr/bin/tr '[:upper:]' '[:lower:]' | /usr/bin/sed 's/\-//g' )</result>"
+  echo "<result>$( "$falconctl" stats agent_info | /usr/bin/awk '/agentID/ {print $2}' | /usr/bin/tr '[:upper:]' '[:lower:]' | /usr/bin/sed 's/\-//g' )</result>"
 else
 	echo "<result>Not Installed</result>"
 fi
