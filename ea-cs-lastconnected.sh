@@ -7,7 +7,8 @@ falconctl=$( /usr/bin/find /Applications -iname "falconctl" -type f -maxdepth 4 
 
 if [ "$falconctl" ];
 then
-	test=$( "$falconctl" stats | /usr/bin/awk '/Cloud Activity | Last Established At/ {print $4,$5,$6,$8}' )
+    test=$( "$falconctl" stats Communications | /usr/bin/awk '/Cloud Activity | Last Established At/ {print $4,$5,$6,$8; exit;}' )
+
     if [ ! -z "$test" ];
     then
 	echo "<result>$( /bin/date -j -f "%b %d, %Y %H:%M:%S" "$test" "+%Y-%m-%d %H:%M:%S" )</result>"
