@@ -1,19 +1,23 @@
 #!/bin/zsh
 
-# Report the Crowdstrike installed state
+# Find any falconctl binary
+falconctl=$( /usr/bin/find /Applications/Falcon.app -iname "falconctl" -type f -maxdepth 3 )
 
-app="/Applications/Falcon.app/Contents/Resources/falconctl"
-
-if [ ! -f "$app" ];
+# If installed
+if [ "$falconctl" ];
 then
-	echo "<result>Not Installed</result>"
+    # Test for status
+    test=$( "$falconctl" stats CloudInfo | /usr/bin/awk '/Cloud Info | State/ {print $2}' )
+    
+    if [ "$test" = "connected" ];
+    then
+    	# Report working
+        echo "<result>Connected</result>"
+    else
+    	# We should do something about this
+    	echo "<result>DISCONNECTED</result>"
+    fi
 else
-	test=$( /Applications/Falcon.app/Contents/Resources/falconctl stats | grep -i "State: " | awk '{ print $2 }' 2>/dev/null )
-
-  if [ "$test" = "connected" ];
-  then
-	  echo "<result>$test</result>"
-  else
-	  echo "<result>error</result>"
-  fi
+    # Not present. Report and exit.
+    echo "<result>Not Installed</result>"
 fi
