@@ -9,6 +9,9 @@ if [ "$falconctl" ];
 then
     test=$( "$falconctl" stats Communications | /usr/bin/awk '/Cloud Activity | Last Established At/ {print $4,$5,$6,$8; exit;}' )
 
+    # Did we get output? If not try again with alternative check
+    [ ! -z "$test" ] && { test=$( "$falconctl" stats | /usr/bin/awk '/Cloud Activity | Established At/ {print $3,$4,$5,$7; exit;}' ); }   
+
     if [ ! -z "$test" ];
     then
 	echo "<result>$( /bin/date -j -f "%b %d, %Y %H:%M:%S" "$test" "+%Y-%m-%d %H:%M:%S" )</result>"
