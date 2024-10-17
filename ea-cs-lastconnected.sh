@@ -10,7 +10,7 @@ if [ "$falconctl" ];
 then
     test=$( "$falconctl" stats Communications | /usr/bin/awk '/Cloud Activity | Established At/ {print $3,$4,$5,$7; exit;}' );
 
-    [ ! -z "$test" ] && { test=$( "$falconctl" stats Communications | /usr/bin/awk '/Cloud Activity | Last Established At/ {print $4,$5,$6,$8; exit;}' ) }
+    [ -z "$test" ] && { test=$( "$falconctl" stats Communications | /usr/bin/awk '/Cloud Activity | Last Established At/ {print $4,$5,$6,$8; exit;}' ) }
     
     if [ ! -z "$test" ];
     then
